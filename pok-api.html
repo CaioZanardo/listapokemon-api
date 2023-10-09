@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+      body {
+          background-color: #f0f0f0;
+          font-family: Arial, sans-serif;
+      }
+
+      .container {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+          text-align: center;
+      }
+
+      .form-group {
+          margin-bottom: 20px;
+      }
+
+      table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      table, th, td {
+          border: 1px solid #ccc;
+      }
+
+      th, td {
+          padding: 8px;
+          text-align: left;
+      }
+
+      img {
+          max-width: 50px;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+      }
+
+      input[type="text"] {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+
+      /* Estilo de linhas alternadas */
+      tbody tr:nth-child(even) {
+          background-color: #f2f2f2;
+      }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+      <div>
+          <h1>Lista de Pokémon</h1>
+          <div class="form-group">
+              <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar Pokémon por nome">
+          </div>
+      </div>
+      <table class="table table-bordered">
+          <thead>
+              <tr>
+                  <th>Nome</th>
+                  <th>Imagem</th>
+              </tr>
+          </thead>
+          <tbody id="pokemonList">
+          </tbody>
+      </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        function loadPokemonList() {
+            axios.get('https://pokeapi.co/api/v2/pokemon?limit=151')
+                .then(response => {
+                    const pokemonList = response.data.results.map(pokemon => {
+                        const pokemonId = pokemon.url.split('/').slice(-2, -1)[0];
+                        const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+                        return {
+                            name: pokemon.name,
+                            image: imageUrl,
+                        };
+                    });
+
+                    const pokemonTable = document.getElementById('pokemonList');
+                    pokemonTable.innerHTML = '';
+
+                    pokemonList.forEach(pokemon => {
+                        const row = document.createElement('tr');
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = pokemon.name;
+                        const imageCell = document.createElement('td');
+                        const image = document.createElement('img');
+                        image.src = pokemon.image;
+                        image.alt = pokemon.name;
+                        imageCell.appendChild(image);
+
+                        row.appendChild(nameCell);
+                        row.appendChild(imageCell);
+
+                        pokemonTable.appendChild(row);
+                    });
+                });
+        }
+
+        loadPokemonList();
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function () {
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('#pokemonList tr');
+
+            rows.forEach(row => {
+                const nameCell = row.querySelector('td:first-child');
+                const name = nameCell.textContent.toLowerCase();
+
+                if (name.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
