@@ -1,6 +1,10 @@
 # listapokemon-api
 Conteúdo criado para o CheckPoint de OPTIMIZATION-TECHNOLOGY(FrontEnd)
 
+## Para Utilizar
+
+https://caiozanardo.github.io/listapokemon-api/pok-api.html
+
 ## Grupo do CheckPoint
 
 - André Spinelli Cintra RM 551016
